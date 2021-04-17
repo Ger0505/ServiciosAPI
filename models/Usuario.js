@@ -10,45 +10,50 @@ const validarEmail = function (email) {
 }
 
 const UsuarioSchema = new Schema({
-    nombre:{ 
+    nombre: {
         type: String,
         trim: true,
         required: [true, "nombre es obligatorio"]
     },
-    apellidos:{ 
+    apellidos: {
         type: String,
         trim: true,
         required: [true, "apellidos son obligatorios"]
     },
-    telefono:{
+    telefono: {
         type: Number,
         required: [true, "teléfono es obligatorio"]
     },
-    direccion:{ 
+    direccion: {
         type: String,
         required: [true, "dirección es obligatorio"]
     },
-    correo:{ 
+    correo: {
         type: String,
-        trim:true,
+        trim: true,
         unique: true,
         required: [true, "correo es obligatorio"],
-        validate: [validarEmail,"Ingrese un email válido"],
+        validate: [validarEmail, "Ingrese un email válido"],
         match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.([a-zA-Z]{2,4})+$/
     },
-    password:{ 
+    password: {
         type: String,
         required: [true, "password es obligatorio"]
     }
 })
 
-UsuarioSchema.pre('save', function (next){
-    this.password = bcrypt.hashSync(this.password,saltRounds)
+UsuarioSchema.pre('save', function (next) {
+    this.password = bcrypt.hashSync(this.password, saltRounds)
     next()
 })
 
-UsuarioSchema.methods.validarPassword = function (password){
-    return bcrypt.compareSync(password,this.password);
+UsuarioSchema.statics.updatePwd = function (id, newPwd, cb) {
+    const newPass = bcrypt.hashSync(newPwd, saltRounds)
+    return this.findByIdAndUpdate(id, { password: newPass }, cb)
+}
+
+UsuarioSchema.methods.validarPassword = function (password) {
+    return bcrypt.compareSync(password, this.password);
 }
 
 module.exports = mongoose.model("Usuario", UsuarioSchema)

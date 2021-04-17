@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const bcrypt = require('bcrypt')
+const saltRounds = 10;
 
 const validarEmail = function (email) {
     const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.([a-zA-Z]{2,4})+$/;
@@ -42,5 +44,19 @@ const EmpresaSchema = new Schema({
         required: [true, "password es obligatorio"]
     }
 })
+
+EmpresaSchema.pre('save', function (next) {
+    this.password = bcrypt.hashSync(this.password, saltRounds)
+    next()
+})
+
+EmpresaSchema.statics.updatePwd = function (id, newPwd, cb) {
+    const newPass = bcrypt.hashSync(newPwd, saltRounds)
+    return this.findByIdAndUpdate(id, { password: newPass }, cb)
+}
+
+EmpresaSchema.methods.validarPassword = function (password) {
+    return bcrypt.compareSync(password, this.password);
+}
 
 module.exports = mongoose.model("Empresa", EmpresaSchema)
