@@ -33,12 +33,8 @@ exports.login = (req, res) => {
 
 exports.insert_usuario = (req, res) => {
   const { nombre, apellidos, telefono, direccion, correo, password } = req.body;
-  Usuario.findOne({ correo: correo }, (err, usuario) => {
-    if (usuario)
-      return res.status(200).json({
-        code: 200,
-        msg: "El correo ya es utilizado por un usuario existente"
-      });
+  Usuario.findOne({correo: correo}, (err, usuario) =>{
+    if(usuario) return res.status(200).json({ code: 200, status: "Error", msg: "El correo ya es utilizado por un usuario existente" })
     let user = new Usuario({
       nombre: nombre,
       apellidos: apellidos,
