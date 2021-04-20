@@ -27,23 +27,24 @@ exports.login = (req, res) => {
 
 exports.insert_usuario = (req, res) => {
   const { nombre, apellidos, telefono, direccion, correo, password } = req.body;
-  let user = new Usuario({
-    nombre: nombre,
-    apellidos: apellidos,
-    telefono: telefono,
-    direccion: direccion,
-    correo: correo,
-    password: password,
-  });
-  user.save((err, result) => {
-    if (err && err.name === 'MongoError' && err.code === 11000) return res.status(500).json({ code: 500, msg: 'Correo ya registrado' })
-    if (err) return res.status(500).json({ code: 404, msg: err + '' })
-
-    return res.status(200).json({
-      code: 200,
-      msg: "Usuario insertado"
+  Usuario.findOne({correo: correo}, (err, usuario) =>{
+    if(usuario) return res.status(200).json({ code: 200, msg: "El correo ya es utilizado por un usuario existente" })
+    let user = new Usuario({
+      nombre: nombre,
+      apellidos: apellidos,
+      telefono: telefono,
+      direccion: direccion,
+      correo: correo,
+      password: password,
     });
-  });
+    user.save((err, result) => {
+      if (err) return res.status(500).json({ code: 404, msg: err + '' })
+      return res.status(200).json({
+        code: 200,
+        msg: "Usuario insertado"
+      })
+    })
+  })
 }
 
 exports.update_usuario = (req, res) => {
@@ -67,12 +68,14 @@ exports.update_usuario = (req, res) => {
 exports.update_Pwd = (req, res) => {
   const { actual, nuevo, _id } = req.body
   Usuario.findById(_id, (err, usuario) => {
-    if (err) return res.status(404).json({ code: 404, msg: 'Error al buscar usuario' })
+    if (err) return res.status(500).json({ code: 500, msg: 'Error al buscar usuario' })
     if (usuario.validarPassword(actual)) {
       Usuario.updatePwd(_id, nuevo, (err, result) => {
-        if (err) return res.status(500).json({ code: 404, msg: 'Error al actualizar contraseña' })
+        if (err) return res.status(500).json({ code: 500, msg: 'Error al actualizar contraseña' })
         return res.status(200).json({ code: 200, msg: 'Contraseña actualizada'})
       })
+    }else{
+      return res.status(200).json({ code: 200, msg: 'Contraseña actual no es correcta'})
     }
   })
 }
