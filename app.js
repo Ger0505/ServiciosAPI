@@ -9,7 +9,7 @@ let db = require("./config/db");
 let indexRouter = require("./routes/index");
 let usuRouter = require("./routes/usuario.route");
 const empRouter = require("./routes/empresa.route");
-
+const msgRouter = require("./routes/mensaje.route");
 let app = express();
 
 // view engine setup
@@ -31,6 +31,7 @@ db.mongoConnect();
 app.use("/", indexRouter);
 app.use("/usu", usuRouter);
 app.use("/emp", empRouter);
+app.use("/msg", msgRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
