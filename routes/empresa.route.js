@@ -8,6 +8,6 @@ router.post("/login", empresaController.login);
 router.post("/insert", empresaController.insert_empresa);
 router.put("/update", empresaController.update_empresa);
 router.put("/resetPwd", empresaController.update_Pwd);
-router.delete("/delete/:id", empresaController.delete_usuario);
+router.delete("/delete/:id", empresaController.delete_empresa);
 
 module.exports = router;

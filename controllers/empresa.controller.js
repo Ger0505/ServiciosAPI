@@ -138,7 +138,7 @@ exports.login = (req, res) => {
   });
 };
 
-exports.delete_usuario = (req, res) => {
+exports.delete_empresa = (req, res) => {
   const { id } = req.params;
   Empresa.findById(id, (error, result) => {
     if (error) {
