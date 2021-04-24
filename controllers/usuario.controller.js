@@ -22,11 +22,11 @@ exports.login = (req, res) => {
     if (!usuario)
       return res
         .status(401)
-        .json({ code: 401, msg: "Verificar usuario y/o contraseña 1" });
+        .json({ code: 401, msg: "Verificar usuario y/o contraseña" });
     if (!usuario.validarPassword(password))
       return res
         .status(401)
-        .json({ code: 401, msg: "Verificar usuario y/o contraseña 2" });
+        .json({ code: 401, msg: "Verificar usuario y/o contraseña" });
     return res.status(200).json({ code: 200, usuario: usuario });
   });
 };

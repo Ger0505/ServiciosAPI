@@ -20,20 +20,14 @@ exports.select_empresa = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  const { correo, password } = req.body;
-  Empresa.findOne({ correo: correo }, (err, empresa) => {
+  const { correo, password } = req.body
+  Empresa.findOne({correo: correo}, (err, empresa)=>{
     if (err) return res.status(500).json({ code: 404, msg: err + "" });
-    if (!empresa)
-      return res
-        .status(401)
-        .json({ code: 401, msg: "Verificar usuario y/o contraseña 1" });
-    if (!usuario.validarPassword(password))
-      return res
-        .status(401)
-        .json({ code: 401, msg: "Verificar usuario y/o contraseña 2" });
-    return res.status(200).json({ code: 200, empresa });
-  });
-};
+    if(!empresa) return res.status(401).json({code: 401, msg: "Verificar usuario y/o contraseña" })
+    if (!empresa.validarPassword(password)) return res.status(401).json({ code: 401, msg: "Verificar usuario y/o contraseña" });
+    return res.status(200).json({ code: 200, empresa: empresa });
+  })
+}
 
 exports.insert_empresa = (req, res) => {
   const {
@@ -140,7 +134,7 @@ exports.login = (req, res) => {
 
 exports.delete_empresa = (req, res) => {
   const { id } = req.params;
-  Empresa.findById(id, (error, result) => {
+  Empresa.findByIdAndDelete(id, (error, result) => {
     if (error) {
       res.status(500).json({ code: 404, msg: error + "" });
     }
