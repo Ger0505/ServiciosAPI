@@ -7,6 +7,7 @@ router.get("/:id", empresaController.select_empresa);
 router.post("/login", empresaController.login);
 router.post("/insert", empresaController.insert_empresa);
 router.put("/update", empresaController.update_empresa);
+router.put("/update/logo", empresaController.insert_logo);
 router.put("/resetPwd", empresaController.update_Pwd);
 router.delete("/delete/:id", empresaController.delete_empresa);
 

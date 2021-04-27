@@ -23,52 +23,54 @@ exports.login = (req, res) => {
   const { correo, password } = req.body
   Empresa.findOne({correo: correo}, (err, empresa)=>{
     if (err) return res.status(500).json({ code: 404, msg: err + "" });
-    if(!empresa) return res.status(401).json({code: 401, msg: "Verificar usuario y/o contraseña" })
-    if (!empresa.validarPassword(password)) return res.status(401).json({ code: 401, msg: "Verificar usuario y/o contraseña" });
+    if(!empresa) return res.status(401).json({code: 401, msg: "1Verificar usuario y/o contraseña" })
+    if (!empresa.validarPassword(password)) return res.status(401).json({ code: 401, msg: "2Verificar usuario y/o contraseña" });
     return res.status(200).json({ code: 200, empresa: empresa });
   })
 }
 
 exports.insert_empresa = (req, res) => {
-  const {
-    nombre,
-    logo,
-    descripcion,
-    correo,
-    direccion,
-    telefono,
-    password
-  } = req.body;
+  const { nombre, logo, descripcion, correo, direccion, telefono,
+    password } = req.body;
   Empresa.findOne({ correo: correo }, (error, empresa) => {
+    if (error) res.status(500).json(error +"")
     if (empresa)
       return res.status(200).json({
         code: 200,
-        msg: "El correo ya es utilizado por un usuario existente"
+        status: "Error",
+        msg: "El correo ya es utilizado por una empresa existente"
       });
-    let emp = new Empresa({
-      nombre,
-      logo,
-      descripcion,
-      telefono,
-      direccion,
-      correo,
-      password
+      let emp = new Empresa({
+        nombre,
+        logo,
+        descripcion,
+        telefono,
+        direccion,
+        correo,
+        password
     });
     emp.save((error, result) => {
       if (error) return res.status(500).json({ code: 404, msg: error + "" });
       return res.status(200).json({
         code: 200,
-        msg: "Empresa insertado"
+        msg: "Empresa insertada"
       });
     });
   });
 };
 
+exports.insert_logo = (req, res) =>{
+  const { _id, name } = req.body
+  Empresa.findByIdAndUpdate(_id,{logo: name}, (err, result) => {
+    if(err) return res.status(200).json({code: 200, status: "Error", msg: "Error al actualizar logo"})
+    return res.status(200).json({code: 200, msg: "Imagen actualizada"})
+  })  
+}
+
 exports.update_empresa = (req, res) => {
   const {
     _id,
     nombre,
-    logo,
     descripcion,
     correo,
     direccion,
@@ -76,7 +78,6 @@ exports.update_empresa = (req, res) => {
   } = req.body;
   let emp = {
     nombre,
-    logo,
     descripcion,
     telefono,
     direccion,
@@ -92,15 +93,15 @@ exports.update_empresa = (req, res) => {
 };
 
 exports.update_Pwd = (req, res) => {
-  const { newPass, oldPass, _id } = req.body;
-  Empresa.findById(_id, (error, empresa) => {
-    if (error)
+  const { actual, nuevo, _id } = req.body;
+  Empresa.findById(_id, (err, empresa) => {
+    if (err)
       return res
         .status(500)
-        .json({ code: 500, msg: "Error al buscar empresa" });
-    if (empresa.validarPassword(oldPass)) {
-      Empresa.updatePwd(_id, newPass, (error, result) => {
-        if (error)
+        .json({ code: 500, msg: "Error al buscar la empresa" });
+    if (empresa.validarPassword(actual)) {
+      Empresa.updatePwd(_id, nuevo, (err, result) => {
+        if (err)
           return res
             .status(500)
             .json({ code: 500, msg: "Error al actualizar contraseña" });
@@ -111,24 +112,8 @@ exports.update_Pwd = (req, res) => {
     } else {
       return res
         .status(200)
-        .json({ code: 200, msg: "Contraseña actual no es correcta" });
+        .json({ code: 200, status: "Error", msg: "Contraseña actual no es correcta" });
     }
-  });
-};
-
-exports.login = (req, res) => {
-  const { correo, password } = req.body;
-  Empresa.findOne({ correo: correo }, (error, empresa) => {
-    if (error) return res.status(500).json({ code: 404, msg: err + "" });
-    if (!empresa)
-      return res
-        .status(401)
-        .json({ code: 401, msg: "Verificar usuario y/o contraseña 1" });
-    if (!empresa.validarPassword(password))
-      return res
-        .status(401)
-        .json({ code: 401, msg: "Verificar usuario y/o contraseña 2" });
-    return res.status(200).json({ code: 200, empresa: empresa });
   });
 };
 
