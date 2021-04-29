@@ -20,34 +20,47 @@ exports.select_empresa = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  const { correo, password } = req.body
-  Empresa.findOne({correo: correo}, (err, empresa)=>{
+  const { correo, password } = req.body;
+  Empresa.findOne({ correo: correo }, (err, empresa) => {
     if (err) return res.status(500).json({ code: 404, msg: err + "" });
-    if(!empresa) return res.status(401).json({code: 401, msg: "1Verificar usuario y/o contraseña" })
-    if (!empresa.validarPassword(password)) return res.status(401).json({ code: 401, msg: "2Verificar usuario y/o contraseña" });
+    if (!empresa)
+      return res
+        .status(401)
+        .json({ code: 401, msg: "1Verificar usuario y/o contraseña" });
+    if (!empresa.validarPassword(password))
+      return res
+        .status(401)
+        .json({ code: 401, msg: "2Verificar usuario y/o contraseña" });
     return res.status(200).json({ code: 200, empresa: empresa });
-  })
-}
+  });
+};
 
 exports.insert_empresa = (req, res) => {
-  const { nombre, logo, descripcion, correo, direccion, telefono,
-    password } = req.body;
+  const {
+    nombre,
+    logo,
+    descripcion,
+    correo,
+    direccion,
+    telefono,
+    password
+  } = req.body;
   Empresa.findOne({ correo: correo }, (error, empresa) => {
-    if (error) res.status(500).json(error +"")
+    if (error) res.status(500).json(error + "");
     if (empresa)
       return res.status(200).json({
         code: 200,
         status: "Error",
         msg: "El correo ya es utilizado por una empresa existente"
       });
-      let emp = new Empresa({
-        nombre,
-        logo,
-        descripcion,
-        telefono,
-        direccion,
-        correo,
-        password
+    let emp = new Empresa({
+      nombre,
+      logo,
+      descripcion,
+      telefono,
+      direccion,
+      correo,
+      password
     });
     emp.save((error, result) => {
       if (error) return res.status(500).json({ code: 404, msg: error + "" });
@@ -59,23 +72,19 @@ exports.insert_empresa = (req, res) => {
   });
 };
 
-exports.insert_logo = (req, res) =>{
-  const { _id, name } = req.body
-  Empresa.findByIdAndUpdate(_id,{logo: name}, (err, result) => {
-    if(err) return res.status(200).json({code: 200, status: "Error", msg: "Error al actualizar logo"})
-    return res.status(200).json({code: 200, msg: "Imagen actualizada"})
-  })  
-}
+exports.update_logo = (req, res) => {
+  const { _id, name } = req.body;
+  Empresa.findByIdAndUpdate(_id, { logo: name }, (err, result) => {
+    if (err)
+      return res
+        .status(200)
+        .json({ code: 200, status: "Error", msg: "Error al actualizar logo" });
+    return res.status(200).json({ code: 200, msg: "Imagen actualizada" });
+  });
+};
 
 exports.update_empresa = (req, res) => {
-  const {
-    _id,
-    nombre,
-    descripcion,
-    correo,
-    direccion,
-    telefono
-  } = req.body;
+  const { _id, nombre, descripcion, correo, direccion, telefono } = req.body;
   let emp = {
     nombre,
     descripcion,
@@ -83,11 +92,11 @@ exports.update_empresa = (req, res) => {
     direccion,
     correo
   };
-  Empresa.findByIdAndUpdate(_id, emp, (error, result) => {
-    if (error) res.status(500).json({ code: 404, msg: err + "" });
+  Empresa.findByIdAndUpdate(_id, emp, (err, result) => {
+    if (err) res.status(500).json({ code: 404, msg: err + "" });
     res.status(200).json({
       code: 200,
-      msg: "Empresa actualizado"
+      msg: "Usuario actualizado"
     });
   });
 };
@@ -99,6 +108,7 @@ exports.update_Pwd = (req, res) => {
       return res
         .status(500)
         .json({ code: 500, msg: "Error al buscar la empresa" });
+    console.log(empresa);
     if (empresa.validarPassword(actual)) {
       Empresa.updatePwd(_id, nuevo, (err, result) => {
         if (err)
@@ -110,9 +120,11 @@ exports.update_Pwd = (req, res) => {
           .json({ code: 200, msg: "Contraseña actualizada" });
       });
     } else {
-      return res
-        .status(200)
-        .json({ code: 200, status: "Error", msg: "Contraseña actual no es correcta" });
+      return res.status(200).json({
+        code: 200,
+        status: "Error",
+        msg: "Contraseña actual no es correcta"
+      });
     }
   });
 };
