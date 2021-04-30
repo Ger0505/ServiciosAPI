@@ -31,9 +31,9 @@ exports.login = (req, res) => {
 
 exports.insert_empresa = (req, res) => {
   const { nombre, logo, descripcion, correo, direccion, telefono,
-    password } = req.body;
+    password, tipo } = req.body;
   Empresa.findOne({ correo: correo }, (error, empresa) => {
-    if (error) res.status(500).json(error +"")
+    if (error) return res.status(500).json({code: 500, status: "Error", msg: "Error al insertar empresa"})
     if (empresa)
       return res.status(200).json({
         code: 200,
@@ -47,7 +47,8 @@ exports.insert_empresa = (req, res) => {
         telefono,
         direccion,
         correo,
-        password
+        password,
+        tipo
     });
     emp.save((error, result) => {
       if (error) return res.status(500).json({ code: 404, msg: error + "" });

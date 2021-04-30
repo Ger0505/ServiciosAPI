@@ -21,10 +21,12 @@ const PedidoSchema = new Schema({
         type: Number,
         required: [true, "cantidad es obligatorio"]
     },
+    precio:{
+        type: Number
+    },
     descripcion:{ 
         type: String,
-        trim: true,
-        required: [true, "descripción es obligatorio"]
+        trim: true
     },
     empresa:{
         type: Schema.Types.ObjectId,
@@ -33,7 +35,6 @@ const PedidoSchema = new Schema({
     },
     repartidor:{
         type: Schema.Types.ObjectId,
-        required: [true, "repartidor es obligatorio"],
         ref: "Repartidor"
     },
     usuario:{

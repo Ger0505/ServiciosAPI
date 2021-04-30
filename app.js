@@ -8,8 +8,10 @@ let db = require("./config/db");
 
 let indexRouter = require("./routes/index");
 let usuRouter = require("./routes/usuario.route");
-const empRouter = require("./routes/empresa.route");
-const msgRouter = require("./routes/mensaje.route");
+let empRouter = require("./routes/empresa.route");
+let msgRouter = require("./routes/mensaje.route");
+let repRouter = require("./routes/pedido.route")
+
 let app = express();
 
 // view engine setup
@@ -32,6 +34,7 @@ app.use("/", indexRouter);
 app.use("/usu", usuRouter);
 app.use("/emp", empRouter);
 app.use("/msg", msgRouter);
+app.use("/ped", repRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
