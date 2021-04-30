@@ -1,6 +1,6 @@
-let express = require("express");
-let router = express.Router();
-let repartidorController = require("../controllers/repartidor.controller");
+const express = require("express");
+const router = express.Router();
+const repartidorController = require("../controllers/repartidor.controller");
 
 router.get("/", repartidorController.select_repartidores);
 router.get("/:id", repartidorController.select_rep_empresa);
