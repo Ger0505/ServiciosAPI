@@ -42,6 +42,10 @@ const EmpresaSchema = new Schema({
     password:{ 
         type: String,
         required: [true, "password es obligatorio"]
+    },
+    tipo:{
+        type: Number,
+        required: [true, "tipo es obligatorio"]
     }
 })
 
