@@ -38,12 +38,13 @@ const UsuarioSchema = new Schema({
     },
     password: {
         type: String,
-        required: [true, "password es obligatorio"]
+        trim: true
     }
 })
 
 UsuarioSchema.pre('save', function (next) {
-    this.password = bcrypt.hashSync(this.password, saltRounds)
+    if(this.password)
+        this.password = bcrypt.hashSync(this.password, saltRounds)
     next()
 })
 

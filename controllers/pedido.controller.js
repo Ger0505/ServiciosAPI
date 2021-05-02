@@ -21,10 +21,10 @@ exports.select_pedidos_usuario = (req, res) => {
   });
 };
 
-exports.select_pedidos_empresa = (req, res) => {
-  const { id } = req.params;
-  Pedido.find({ empresa: id })
-    .populate("usuario", { select: "nombre apellidos direccion telefono" })
+exports.select_pedidos_empresa = (req, res) =>{
+  const { id } = req.params
+  Pedido.find({empresa: id})
+    .populate({path:"usuario", select: "nombre apellidos direccion telefono" })
     .exec()
     .then((pedidos) => res.status(200).json(pedidos))
     .catch((error) => res.status(404).json({ code: 404, msg: error + "" }));
