@@ -4,15 +4,15 @@ let path = require("path");
 let cookieParser = require("cookie-parser");
 let logger = require("morgan");
 let cors = require("cors");
-let db = require("./config/db")
-let backup = require("./config/backup")
+let db = require("./config/db");
+let backup = require("./config/backup");
 
-let indexRouter = require("./routes/index");
-let usuRouter = require("./routes/usuario.route");
-let empRouter = require("./routes/empresa.route");
-let msgRouter = require("./routes/mensaje.route");
-let pedRouter = require("./routes/pedido.route")
-let repRouter = require("./routes/repartidor.route")
+const indexRouter = require("./routes/index");
+const usuRouter = require("./routes/usuario.route");
+const empRouter = require("./routes/empresa.route");
+const msgRouter = require("./routes/mensaje.route");
+const pedRouter = require("./routes/pedido.route");
+const repRouter = require("./routes/repartidor.route");
 
 let app = express();
 
@@ -33,7 +33,7 @@ app.use(cors());
 db.mongoConnect();
 
 // BackUp de Base de datos
-backup.start()
+backup.start();
 
 app.use("/", indexRouter);
 app.use("/usu", usuRouter);
