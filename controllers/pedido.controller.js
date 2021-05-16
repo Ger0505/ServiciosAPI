@@ -1,6 +1,17 @@
 const moment = require("moment");
 moment.locale("es-mx");
 const Pedido = require("../models/Pedido");
+const mongoose = require('mongoose')
+
+
+exports.groupby_repartidor = (req, res) =>{
+  const { id } = req.params
+  Pedido.aggregate()
+  .match({empresa: mongoose.Types.ObjectId(id)})
+  .group({ _id: '$repartidor', pedidos: { $sum: 1 }, ventas: { $sum: {$multiply:["$precio","$cantidad"]}} })
+  .then(ped => res.status(200).json(ped))
+  .catch(err => res.status(404).json({msg: err + ""}))
+}
 
 exports.select_pedidos = (req, res) => {
   Pedido.find({})
@@ -25,6 +36,8 @@ exports.select_pedidos_empresa = (req, res) =>{
   const { id } = req.params
   Pedido.find({empresa: id})
     .populate({path:"usuario", select: "nombre apellidos direccion telefono" })
+    .populate("repartidor")
+    .populate("usuario")
     .exec()
     .then((pedidos) => res.status(200).json(pedidos))
     .catch((error) => res.status(404).json({ code: 404, msg: error + "" }));

@@ -4,7 +4,8 @@ let path = require("path");
 let cookieParser = require("cookie-parser");
 let logger = require("morgan");
 let cors = require("cors");
-let db = require("./config/db");
+let db = require("./config/db")
+let backup = require("./config/backup")
 
 let indexRouter = require("./routes/index");
 let usuRouter = require("./routes/usuario.route");
@@ -28,8 +29,11 @@ app.use(express.static(path.join(__dirname, "public")));
 // Comunicación entre apliaciones
 app.use(cors());
 
-//Mongo Connection
+//Conexión con Mongo
 db.mongoConnect();
+
+// BackUp de Base de datos
+backup.start()
 
 app.use("/", indexRouter);
 app.use("/usu", usuRouter);

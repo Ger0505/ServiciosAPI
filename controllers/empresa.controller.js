@@ -1,4 +1,6 @@
 const Empresa = require("../models/Empresa");
+const Pedido = require("../models/Pedido")
+const Repartidor = require("../models/Repartidor")
 
 exports.select_empresas = (req, res) => {
   Empresa.find({}, (error, empresas) => {
@@ -135,11 +137,15 @@ exports.update_Pwd = (req, res) => {
 };
 
 exports.delete_empresa = (req, res) => {
-  const { id } = req.params;
-  Empresa.findByIdAndDelete(id, (error, result) => {
-    if (error) {
-      res.status(500).json({ code: 404, msg: error + "" });
-    }
-    res.status(200).json({ code: 200, msg: "Empresa eliminada" });
-  });
+  const { id } = req.params
+
+  Pedido.deleteMany({empresa: id})
+  .then(res => {
+    Repartidor.deleteMany({empresa: id})
+    .then(res => {
+      Empresa.findByIdAndDelete(id)
+      .then(res => res.status(200).json({ code: 200, msg: "Empresa eliminada" }))
+    })
+  })
+  .catch(err => res.status(500).json({code: 500, status: "Error", msg: err + ""}))
 };
