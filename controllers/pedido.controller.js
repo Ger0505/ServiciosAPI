@@ -1,14 +1,48 @@
 const moment = require("moment");
 moment.locale("es-mx");
 const Pedido = require("../models/Pedido");
+const Repartidor = require("../models/Repartidor")
 const mongoose = require('mongoose')
 
+exports.groupby_diario = (req,res) =>{
+  const { id } = req.params
+  Pedido.aggregate()
+  .match({empresa: mongoose.Types.ObjectId(id), fecha: moment().format("L")})
+  .group({_id: null, pedidos: { $sum: 1 }, ventas: { $sum: "$precio"}})
+  .then(ped => {
+    Repartidor.aggregate()
+    .match({empresa: mongoose.Types.ObjectId(id)})
+    .group({_id: null, sum: { $sum: 1 }})
+    .then(rep => {
+      Pedido.aggregate()
+      .match({repartidor: {$exists: false}, empresa: mongoose.Types.ObjectId(id), fecha: moment().format("L")})
+      .group({_id: null, sum:{ $sum:1 }})
+      .then(ped2 =>{
+        if(ped.length === 0) ped[0] = {_id: null, pedidos: 0, ventas: 0.0}
+        ped[0].repartidores = rep[0].sum
+        ped[0].nulos = ped2[0].sum
+        res.status(200).json(ped[0])
+      })
+    })
+  })
+  .catch(err => res.status(404).json({msg: err + ""}))
+}
+
+exports.groupby_ventas = (req, res) =>{
+  const { id } = req.params
+  Pedido.aggregate()
+  .match({empresa: mongoose.Types.ObjectId(id)})
+  .group({_id: '$fecha', pedidos: { $sum: 1 }, ventas: { $sum: "$precio"}})
+  .sort({_id: -1})
+  .then(ped => res.status(200).json(ped))
+  .catch(err => res.status(404).json({msg: err + ""}))
+}
 
 exports.groupby_repartidor = (req, res) =>{
   const { id } = req.params
   Pedido.aggregate()
   .match({empresa: mongoose.Types.ObjectId(id)})
-  .group({ _id: '$repartidor', pedidos: { $sum: 1 }, ventas: { $sum: {$multiply:["$precio","$cantidad"]}} })
+  .group({ _id: '$repartidor', pedidos: { $sum: 1 }, ventas: { $sum: "$precio"} })
   .then(ped => res.status(200).json(ped))
   .catch(err => res.status(404).json({msg: err + ""}))
 }

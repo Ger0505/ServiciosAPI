@@ -10,5 +10,7 @@ router.post("/insert/rep", pedidoController.insert_repartidor);
 router.put("/update", pedidoController.update_pedido);
 router.delete("/delete", pedidoController.delete_pedido);
 router.get("/gb/:id", pedidoController.groupby_repartidor)
+router.get("/gb/t/:id", pedidoController.groupby_diario)
+router.get("/gb/v/:id", pedidoController.groupby_ventas)
 
 module.exports = router;
