@@ -5,7 +5,7 @@ const Empresa = require('../models/Empresa')
 const Repartidor = require('../models/Repartidor')
 const Pedido = require('../models/Pedido')
 
-const URL = "http://localhost:3003/";
+const URL = "https://servicios-back.herokuapp.com/";
 
 class Api {
     async postData(path, body) {
