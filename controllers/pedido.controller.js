@@ -19,8 +19,10 @@ exports.groupby_diario = (req,res) =>{
       .group({_id: null, sum:{ $sum:1 }})
       .then(ped2 =>{
         if(ped.length === 0) ped[0] = {_id: null, pedidos: 0, ventas: 0.0}
-        ped[0].repartidores = rep[0].sum
-        ped[0].nulos = ped2[0].sum
+        if(rep.length === 0) ped[0].repartidores = 0
+        else ped[0].repartidores = rep[0].sum
+        if(ped2.length === 0) ped[0].nulos = 0
+        else ped[0].nulos = ped2[0].sum
         res.status(200).json(ped[0])
       })
     })
