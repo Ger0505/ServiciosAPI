@@ -4,6 +4,7 @@ const empresaController = require("../controllers/empresa.controller");
 
 router.get("/", empresaController.select_empresas);
 router.get("/:id", empresaController.select_empresa);
+router.get("/logo/:id", empresaController.select_logo);
 router.post("/login", empresaController.login);
 router.post("/insert", empresaController.insert_empresa);
 router.put("/update", empresaController.update_empresa);

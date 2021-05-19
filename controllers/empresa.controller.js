@@ -21,6 +21,13 @@ exports.select_empresa = (req, res) => {
   });
 };
 
+exports.select_logo = (req, res) =>{
+  const { id } = req.params
+  Empresa.findById(id)
+  .then(emp => res.status(200).json({logo: emp.logo}))
+  .catch(err => res.status(404).json({ code: 404, msg: error + "" }))
+}
+
 exports.login = (req, res) => {
   const { correo, password } = req.body;
   Empresa.findOne({ correo: correo }, (err, empresa) => {
