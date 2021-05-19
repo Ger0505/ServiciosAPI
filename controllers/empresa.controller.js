@@ -1,6 +1,6 @@
 const Empresa = require("../models/Empresa");
-const Pedido = require("../models/Pedido")
-const Repartidor = require("../models/Repartidor")
+const Pedido = require("../models/Pedido");
+const Repartidor = require("../models/Repartidor");
 
 exports.select_empresas = (req, res) => {
   Empresa.find({}, (error, empresas) => {
@@ -84,8 +84,8 @@ exports.update_logo = (req, res) => {
   Empresa.findByIdAndUpdate(_id, { logo: name }, (err, result) => {
     if (err)
       return res
-        .status(200)
-        .json({ code: 200, status: "Error", msg: "Error al actualizar logo" });
+        .status(500)
+        .json({ code: 500, status: "Error", msg: "Error al actualizar logo" });
     return res.status(200).json({ code: 200, msg: "Imagen actualizada" });
   });
 };
@@ -137,15 +137,17 @@ exports.update_Pwd = (req, res) => {
 };
 
 exports.delete_empresa = (req, res) => {
-  const { id } = req.params
+  const { id } = req.params;
 
-  Pedido.deleteMany({empresa: id})
-  .then(res => {
-    Repartidor.deleteMany({empresa: id})
-    .then(res => {
-      Empresa.findByIdAndDelete(id)
-      .then(res => res.status(200).json({ code: 200, msg: "Empresa eliminada" }))
+  Pedido.deleteMany({ empresa: id })
+    .then((res) => {
+      Repartidor.deleteMany({ empresa: id }).then((res) => {
+        Empresa.findByIdAndDelete(id).then((res) =>
+          res.status(200).json({ code: 200, msg: "Empresa eliminada" })
+        );
+      });
     })
-  })
-  .catch(err => res.status(500).json({code: 500, status: "Error", msg: err + ""}))
+    .catch((err) =>
+      res.status(500).json({ code: 500, status: "Error", msg: err + "" })
+    );
 };
