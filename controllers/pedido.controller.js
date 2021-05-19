@@ -45,6 +45,7 @@ exports.groupby_repartidor = (req, res) =>{
   Pedido.aggregate()
   .match({empresa: mongoose.Types.ObjectId(id)})
   .group({ _id: '$repartidor', pedidos: { $sum: 1 }, ventas: { $sum: "$precio"} })
+  .sort({_id: 1})
   .then(ped => res.status(200).json(ped))
   .catch(err => res.status(404).json({msg: err + ""}))
 }
