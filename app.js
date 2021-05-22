@@ -6,6 +6,7 @@ let logger = require("morgan");
 let cors = require("cors");
 let db = require("./config/db");
 let backup = require("./config/backup");
+let auth = require("./auth/auth");
 
 const indexRouter = require("./routes/index");
 const usuRouter = require("./routes/usuario.route");
@@ -13,6 +14,7 @@ const empRouter = require("./routes/empresa.route");
 const msgRouter = require("./routes/mensaje.route");
 const pedRouter = require("./routes/pedido.route");
 const repRouter = require("./routes/repartidor.route");
+const logRouter = require("./routes/login.route");
 
 let app = express();
 
@@ -36,6 +38,8 @@ db.mongoConnect();
 backup.start();
 
 app.use("/", indexRouter);
+app.use("/log", logRouter);
+app.use(auth);
 app.use("/usu", usuRouter);
 app.use("/emp", empRouter);
 app.use("/msg", msgRouter);
