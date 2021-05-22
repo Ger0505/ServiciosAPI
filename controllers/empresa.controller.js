@@ -43,9 +43,9 @@ exports.login = (req, res) => {
         .json({ code: 401, msg: "2Verificar usuario y/o contraseña" });
     
     let token = jwt.sign({
-      id: usuario._id,
-      nombre: usuario.nombre
-    },"2bacc9903277ae43809f0bd3d57bcfa9",{expiresIn: 60 * 1})
+      id: empresa._id,
+      nombre: empresa.nombre
+    },"2bacc9903277ae43809f0bd3d57bcfa9",{expiresIn: 60 * 60})
     return res.status(200).json({ code: 200, token: token, empresa: empresa });
   });
 };

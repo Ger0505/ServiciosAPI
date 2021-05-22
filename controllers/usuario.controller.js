@@ -31,7 +31,7 @@ exports.login = (req, res) => {
     let token = jwt.sign({
       id: usuario._id,
       nombre: usuario.nombre
-    },"2bacc9903277ae43809f0bd3d57bcfa9",{expiresIn: 60 * 1})
+    },"2bacc9903277ae43809f0bd3d57bcfa9",{expiresIn: 60 * 60})
     return res.status(200).json({ code: 200, token: token, usuario: usuario });
   });
 };
